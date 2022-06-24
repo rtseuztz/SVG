@@ -345,7 +345,8 @@ namespace Svg
         /// Sets the clipping region of the specified <see cref="ISvgRenderer"/>.
         /// </summary>
         /// <param name="renderer">The <see cref="ISvgRenderer"/> to have its clipping region set.</param>
-        protected internal virtual void SetClip(ISvgRenderer renderer)
+        /// <param name="combine">The type of combine mode wanted. Exclude for excludeClip</param>
+        protected internal virtual void SetClip(ISvgRenderer renderer, CombineMode combine = CombineMode.Intersect)
         {
             var clipPath = this.ClipPath.ReplaceWithNullIfNone();
             var clip = this.Clip;
@@ -357,7 +358,7 @@ namespace Svg
                 {
                     var element = this.OwnerDocument.GetElementById<SvgClipPath>(clipPath.ToString());
                     if (element != null)
-                        renderer.SetClip(element.GetClipRegion(this, renderer), CombineMode.Intersect);
+                        renderer.SetClip(element.GetClipRegion(this, renderer), combine);
                 }
 
                 if (!string.IsNullOrEmpty(clip) && clip.StartsWith("rect("))
@@ -369,7 +370,7 @@ namespace Svg
                     var clipRect = new RectangleF(bounds.Left + offsets[3], bounds.Top + offsets[0],
                         bounds.Width - (offsets[3] + offsets[1]),
                         bounds.Height - (offsets[2] + offsets[0]));
-                    renderer.SetClip(new Region(clipRect), CombineMode.Intersect);
+                    renderer.SetClip(new Region(clipRect), combine);
                 }
             }
         }
